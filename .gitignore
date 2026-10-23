@@ -1,0 +1,71 @@
+# secrets — NEVER commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.yaml
+
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+*/.venv/
+*/venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# notebooks
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# data / state
+postgres/data/
+postgres/pgdata/
+*.db
+*.sqlite
+*.sqlite3
+
+# logs
+*.log
+logs/
+
+# docker
+docker-compose.override.yml
+
+# build artifacts
+dist/
+build/
+*.egg-info/
+
+# screenshots — keep manually-curated ones, ignore drafts
+docs/screenshots/_drafts/
+
+# airflow
+airflow/logs/
+airflow/plugins/
+airflow/config/airflow.cfg
+airflow/.env
+
+# Dashboard
+dashboard/.venv/
+dashboard/.streamlit/secrets.tomldrift/reports/
+drift/reports/
+
+# graphify knowledge-graph output (local tool artifact)
+graphify-out/

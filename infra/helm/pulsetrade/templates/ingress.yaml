@@ -1,0 +1,57 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Ingress — TWO resources sharing one load balancer (same ingressClass), so the
+# /api rewrite is ISOLATED from the dashboard.
+#
+# WHY TWO: nginx.ingress rewrite-target is a PER-INGRESS annotation — it applies
+# to every path rule in the SAME Ingress. When /api and / lived in one Ingress,
+# the /$2 rewrite also hit the dashboard's websocket path (/_stcore/stream),
+# mangling it → blank Streamlit page. Splitting puts the rewrite only on the API
+# Ingress; the dashboard Ingress has NO rewrite, so its websocket flows clean.
+# Both share the nginx class → one controller, one load balancer, one public IP.
+# ─────────────────────────────────────────────────────────────────────────────
+{{- if .Values.ingress.enabled }}
+# ── API Ingress: /api/* -> api:8000, prefix stripped ─────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pulsetrade-api
+  annotations:
+    # $2 capture strips the /api prefix: /api/investigate -> /investigate
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: api
+                port:
+                  number: 8000
+---
+# ── Dashboard Ingress: / -> dashboard:8501, NO rewrite (Streamlit-friendly) ──
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pulsetrade-dashboard
+  annotations:
+    # NO rewrite-target here — the dashboard path must pass through untouched so
+    # /_stcore/stream (Streamlit's websocket) and static assets resolve correctly.
+    # Long read/send timeouts keep the persistent websocket alive.
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dashboard
+                port:
+                  number: 8501
+{{- end }}
