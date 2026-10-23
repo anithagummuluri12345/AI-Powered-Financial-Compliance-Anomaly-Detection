@@ -1,8 +1,5 @@
 # PulseTrade
 
-[![CI](https://github.com/madhusiddharths/pulsetrade/actions/workflows/ci.yml/badge.svg)](https://github.com/madhusiddharths/pulsetrade/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-
 Real-time financial intelligence platform that streams market data through Kafka
 and Delta Lake, then uses an agentic AI investigator to explain anomalies in
 plain language.
@@ -130,10 +127,3 @@ evidence, not left running).
 - [docs/debugging.md](docs/debugging.md) — war stories and how they were run down
 - [TODOS.md](TODOS.md) — deliberately deferred work, with pickup context
 
-## Author
-
-Madhu Siddharth Suthagar — MAS Data Science, Illinois Institute of Technology, 2026.
-
-## License
-
-[MIT](LICENSE)
